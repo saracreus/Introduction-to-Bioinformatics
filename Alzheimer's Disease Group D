@@ -1,0 +1,25 @@
+#Clustering (terminal)
+cd-hit -i input/seq_interest.fasta -o output/seq_interest_clusters.fasta -c 0.65
+#Cluster+centroid sequence
+with open('output/seq_interest_clusters.fasta.clstr') as output:
+    for line in output:
+        print(line)
+with open('output/seq_interest_clusters.fasta.clstr') as output:
+    for line in output:
+        if '*' in line or '>Cluster' in line:
+            print(line)
+from Bio import SeqIO 
+cdhit_sequences = SeqIO.parse('output/seq_interest_clusters.fasta', 'fasta')
+target_sequence = SeqIO.parse('input/humanseq.fasta', 'fasta')
+
+selected = []
+for seq_record in target_sequence:
+    selected.append(seq_record)
+
+    if 'Uniprot ID of human sequence' not in seq_record.id:
+        selected.append(seq_record)
+        
+with open('output/my_clusters_seq_interest.fasta', 'w') as output_file:
+    SeqIO.write(selected, output_file, 'fasta')
+#MSA (terminal)
+mafft --auto output/my_clusters_seq_interest.fasta > output/seq_interest_msa.fasta
